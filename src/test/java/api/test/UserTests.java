@@ -11,7 +11,8 @@ import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
+import static org.hamcrest.Matcher.*;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class UserTests {
     Faker faker;
@@ -65,12 +66,10 @@ public class UserTests {
         Response afterUpdateResponse = UserEndpoints.readUser(this.userPayload.getUsername());
         afterUpdateResponse.then().log().all();
         Assert.assertEquals(afterUpdateResponse.getStatusCode(),200);
-
-/*        String responseBody= afterUpdateResponse.asString();
+        String responseBody= afterUpdateResponse.asString();
         JsonPath path=new JsonPath(responseBody);
         String afterUpdateName=path.getString("firstName");
-
-        Assert.assertEquals(afterUpdateName,newName);*/
+        Assert.assertEquals(afterUpdateName,newName);
         logger.info("*************************************************");
 
     }
