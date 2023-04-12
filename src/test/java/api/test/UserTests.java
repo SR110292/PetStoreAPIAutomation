@@ -3,7 +3,6 @@ package api.test;
 import api.endPoints.UserEndpoints;
 import api.payload.User;
 import com.github.javafaker.Faker;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,8 +33,7 @@ public class UserTests {
     public void testPostUser(){
         logger.info("************** Create New User ******************");
         Response response = UserEndpoints.createUser(userPayload);
-        response.then().log().body();
-        Assert.assertEquals(response.getStatusCode(),200);
+        response.then().log().body().assertThat().statusCode(200);
         logger.info("*************************************************");
     }
 
@@ -43,8 +41,7 @@ public class UserTests {
     public void testGetUser(){
         logger.info("************** Reading User ******************");
         Response response = UserEndpoints.readUser(userPayload.getUsername());
-        response.then().log().all();
-        Assert.assertEquals(response.getStatusCode(),200);
+        response.then().log().all().assertThat().statusCode(200);
         logger.info("*************************************************");
 
     }
@@ -57,26 +54,21 @@ public class UserTests {
         userPayload.setFirstName(newName);
 
         Response response = UserEndpoints.updateUser(this.userPayload.getUsername(),userPayload);
-        response.then().log().body();
-        Assert.assertEquals(response.getStatusCode(),200);
+        response.then().log().body().assertThat().statusCode(200);
 
         Response afterUpdateResponse = UserEndpoints.readUser(this.userPayload.getUsername());
-        afterUpdateResponse.then().log().all();
-        Assert.assertEquals(afterUpdateResponse.getStatusCode(),200);
-        String responseBody= afterUpdateResponse.asString();
-        JsonPath path=new JsonPath(responseBody);
-        String afterUpdateName=path.getString("firstName");
-        Assert.assertEquals(afterUpdateName,newName);
-        logger.info("*************************************************");
+        afterUpdateResponse.then().log().all().assertThat().statusCode(200);
+        User afterUpdateUser= afterUpdateResponse.as(User.class);
+        Assert.assertEquals(afterUpdateUser.getFirstName(),newName);
 
+        logger.info("**************************************************");
     }
 
     @Test (priority = 4)
     public void testDeleteUser(){
         logger.info("********** Deleting created user *****************");
         Response response = UserEndpoints.deleteUser(userPayload.getUsername());
-        response.then().log().all();
-        Assert.assertEquals(response.getStatusCode(),200);
+        response.then().log().all().assertThat().statusCode(200);
         logger.info("**************************************************");
 
     }

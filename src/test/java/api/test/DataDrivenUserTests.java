@@ -22,15 +22,13 @@ public class DataDrivenUserTests {
         userPayload.setPhone(phone);
 
         Response response = UserEndpoints.createUser(userPayload);
-        response.then().log().body();
-        Assert.assertEquals(response.getStatusCode(),200);
+        response.then().log().body().assertThat().statusCode(200);
     }
 
     @Test (priority = 2, dataProvider = "UserNames", dataProviderClass = DataProviders.class)
     public void testDeleteUser(String userName){
         Response response = UserEndpoints.deleteUser(userName);
-        response.then().log().all();
-        Assert.assertEquals(response.getStatusCode(),200);
+        response.then().log().all().assertThat().statusCode(200);
     }
 
 }
